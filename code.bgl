@@ -1,0 +1,19 @@
+shuru
+    rakho shongkhya x = 40;
+    rakho shobdo message = "Hello World";
+
+    jodi (x > 50) {
+        jodi (x < 80){
+            dekhao "Beshi boro na";
+        }
+        nahole{
+            dekhao "Valoi boro";
+        }
+    } 
+    //nahole_jodi(x == 49){
+    //    print "1 kom";
+    //}
+    nahole {
+        dekhao "Number is not greater than 50";
+    }
+shesh
