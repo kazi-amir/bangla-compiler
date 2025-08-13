@@ -1,19 +1,30 @@
-#include <iostream>
-#include <string>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-    int amarNumber = 40;
-    string message = "Hello World";
-    if (amarNumber > 50) {
-        if (amarNumber < 80) {
-            cout << "Beshi boro na" << endl;
-        } else {
-            cout << "Valoi boro" << endl;
-        }
-    } else {
-        cout << "Number is not greater than 50" << endl;
-    }
-    return 0;
-}
+int main(){ 
+	int x=85; 
+	string message="Hello World"; 
+	x-=6; 
+	if (x>50){ 
+		if (x<80){ 
+			cout << "Beshi boro na\n"; 
+		} 
+		else { 
+			cout << "Valoi boro\n"; 
+		} 
+	} 
+	else if (x==49){ 
+		cout << "x holo 49\n"; 
+	} 
+	else { 
+		cout << "Number is not greater than 50\n"; 
+	} 
+	for (int i=0; 
+	i<10; 
+	i++){ 
+		cout << "loop: "; 
+		cout << i+1; 
+		cout << "\n"; 
+	} 
+	return 0; 
+} 

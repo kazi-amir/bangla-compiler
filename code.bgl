@@ -1,19 +1,27 @@
 shuru
-    rakho shongkhya x = 40;
-    rakho shobdo message = "Hello World";
+    purno x = 85;
+    bakko message = "Hello World";
+
+    x -= 6;
 
     jodi (x > 50) {
         jodi (x < 80){
-            dekhao "Beshi boro na";
+            dekhao "Beshi boro na\n";
         }
         nahole{
-            dekhao "Valoi boro";
+            dekhao "Valoi boro\n";
         }
-    } 
-    //nahole_jodi(x == 49){
-    //    print "1 kom";
-    //}
+    }
+    nahole jodi (x == 49){
+        dekhao "x holo 49\n";
+    }
     nahole {
-        dekhao "Number is not greater than 50";
+        dekhao "Number is not greater than 50\n";
+    }
+
+    loop(purno i = 0; i < 10; i++){
+        dekhao "loop: ";
+        dekhao i + 1;
+        dekhao "\n";
     }
 shesh

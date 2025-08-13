@@ -36,6 +36,7 @@ struct Token {
 class Lexer {
 public:
     Lexer(const string& source) : source_(source), position_(0) {
+        // Added "nahole_jodi" to the keywords list
         keywords_ = {
             {"shuru", true}, {"shesh", true}, {"jodi", true}, {"nahole_jodi", true},
             {"nahole", true}, {"dekhao", true}, {"rakho", true}, 
@@ -44,33 +45,61 @@ public:
     }
 
     Token getNextToken() {
-        while (position_ < source_.length() && isspace(source_[position_])) {
-            position_++;
-        }
-        if (position_ >= source_.length()) return {TokenType::END_OF_FILE, ""};
+        while (position_ < source_.length()) {
+            char currentChar = source_[position_];
 
-        char currentChar = source_[position_];
-
-        if (isdigit(currentChar)) return readInteger();
-        if (isalpha(currentChar) || currentChar == '_') return readIdentifierOrKeyword();
-        if (currentChar == '"') return readString();
-
-        switch (currentChar) {
-            case '+': case '-': case '*': case '/': case '=': case '<': case '>':
+            // Skip whitespace
+            if (isspace(currentChar)) {
                 position_++;
-                if (position_ < source_.length() && source_[position_] == '=') {
-                    char nextChar = source_[position_];
-                    position_++;
-                    return {TokenType::OPERATOR, string(1, currentChar) + string(1, nextChar)};
+                continue;
+            }
+
+            // Handle comments
+            if (currentChar == '#') {
+                // Multi-line comment: ## ... ##
+                if (position_ + 1 < source_.length() && source_[position_ + 1] == '#') {
+                    position_ += 2; // Skip opening '##'
+                    while (position_ + 1 < source_.length() && !(source_[position_] == '#' && source_[position_ + 1] == '#')) {
+                        position_++;
+                    }
+                    if (position_ + 1 < source_.length()) {
+                        position_ += 2; // Skip closing '##'
+                    }
+                    continue; // Find the next token
                 }
-                return {TokenType::OPERATOR, string(1, currentChar)};
-            case ';': case '(': case ')': case '{': case '}': case ',':
-                position_++;
-                return {TokenType::PUNCTUATION, string(1, currentChar)};
+                // Single-line comment: # ... until newline
+                else {
+                    while (position_ < source_.length() && source_[position_] != '\n') {
+                        position_++;
+                    }
+                    continue; // Find the next token
+                }
+            }
+
+            // If not whitespace or comment, it's a token
+            if (isdigit(currentChar)) return readInteger();
+            if (isalpha(currentChar) || currentChar == '_') return readIdentifierOrKeyword();
+            if (currentChar == '"') return readString();
+
+            switch (currentChar) {
+                case '+': case '-': case '*': case '/': case '=': case '<': case '>':
+                    position_++;
+                    if (position_ < source_.length() && source_[position_] == '=') {
+                        char nextChar = source_[position_];
+                        position_++;
+                        return {TokenType::OPERATOR, string(1, currentChar) + string(1, nextChar)};
+                    }
+                    return {TokenType::OPERATOR, string(1, currentChar)};
+                case ';': case '(': case ')': case '{': case '}': case ',':
+                    position_++;
+                    return {TokenType::PUNCTUATION, string(1, currentChar)};
+            }
+
+            position_++;
+            return {TokenType::UNKNOWN, string(1, currentChar)};
         }
 
-        position_++;
-        return {TokenType::UNKNOWN, string(1, currentChar)};
+        return {TokenType::END_OF_FILE, ""};
     }
 
 private:
@@ -162,9 +191,9 @@ struct BlockNode : public StatementNode {
 struct IfStatementNode : public StatementNode {
     unique_ptr<ExpressionNode> condition;
     unique_ptr<BlockNode> ifBlock;
-    unique_ptr<BlockNode> elseBlock;
-    IfStatementNode(unique_ptr<ExpressionNode> c, unique_ptr<BlockNode> ib, unique_ptr<BlockNode> eb)
-        : condition(move(c)), ifBlock(move(ib)), elseBlock(move(eb)) {}
+    unique_ptr<StatementNode> elseNode; // Can be another IfStatementNode or a BlockNode
+    IfStatementNode(unique_ptr<ExpressionNode> c, unique_ptr<BlockNode> ib, unique_ptr<StatementNode> en)
+        : condition(move(c)), ifBlock(move(ib)), elseNode(move(en)) {}
     string getType() const override { return "IfStatementNode"; }
 };
 
@@ -196,6 +225,9 @@ public:
 private:
     Lexer& lexer_;
     Token currentToken_;
+
+    // Forward declaration for recursive use in parseStatement
+    unique_ptr<StatementNode> parseIfStatement();
 
     void eat(TokenType type, const string& value = "") {
         if (currentToken_.type == type && (value.empty() || currentToken_.value == value)) {
@@ -262,6 +294,8 @@ private:
             } else if (currentToken_.value == "dekhao") {
                 return parsePrintStatement();
             } else if (currentToken_.value == "jodi") {
+                // Consume 'jodi' here before calling the parsing function
+                eat(TokenType::KEYWORD, "jodi");
                 return parseIfStatement();
             }
         }
@@ -286,28 +320,39 @@ private:
         eat(TokenType::PUNCTUATION, ";");
         return unique_ptr<PrintStatementNode>(new PrintStatementNode(move(expr)));
     }
-
-    unique_ptr<StatementNode> parseIfStatement() {
-        eat(TokenType::KEYWORD, "jodi");
-        eat(TokenType::PUNCTUATION, "(");
-        auto condition = parseExpression();
-        eat(TokenType::PUNCTUATION, ")");
-        auto ifBlock = parseBlock();
-        unique_ptr<BlockNode> elseBlock = nullptr;
-        if (currentToken_.type == TokenType::KEYWORD && currentToken_.value == "nahole") {
-            eat(TokenType::KEYWORD, "nahole");
-            elseBlock = parseBlock();
-        }
-        return unique_ptr<IfStatementNode>(new IfStatementNode(move(condition), move(ifBlock), move(elseBlock)));
-    }
 };
+
+// --- Parser method definitions that need forward declaration ---
+
+unique_ptr<StatementNode> Parser::parseIfStatement() {
+    // This function is now called AFTER 'jodi' has been consumed.
+    eat(TokenType::PUNCTUATION, "(");
+    auto condition = parseExpression();
+    eat(TokenType::PUNCTUATION, ")");
+    auto ifBlock = parseBlock();
+
+    unique_ptr<StatementNode> elseNode = nullptr;
+    if (currentToken_.type == TokenType::KEYWORD) {
+        if (currentToken_.value == "nahole_jodi") {
+            eat(TokenType::KEYWORD, "nahole_jodi");
+            // The next part is an "if" statement. We can recursively call this function.
+            elseNode = parseIfStatement();
+        } else if (currentToken_.value == "nahole") {
+            eat(TokenType::KEYWORD, "nahole");
+            elseNode = parseBlock();
+        }
+    }
+    
+    return unique_ptr<IfStatementNode>(new IfStatementNode(move(condition), move(ifBlock), move(elseNode)));
+}
+
 
 // --- Code Generator Section ---
 
 class CodeGenerator {
 public:
     string generate(const ProgramNode* program) {
-        string output = "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n";
+        string output = "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n";
         for (const auto& stmt : program->statements) {
             output += generateStatement(stmt.get());
         }
@@ -332,25 +377,43 @@ private:
         throw runtime_error("CodeGenerator: Unknown expression type.");
     }
 
-    string generateStatement(const StatementNode* stmt) {
+    string generateStatement(const StatementNode* stmt, int indent = 1) {
+        string indentation(indent * 4, ' ');
         string code;
         if (auto node = dynamic_cast<const VariableDeclarationNode*>(stmt)) {
             string cppType = (node->varType == "shongkhya") ? "int" : "string";
-            code += "    " + cppType + " " + node->varName + " = " + generateExpression(node->value.get()) + ";\n";
+            code += indentation + cppType + " " + node->varName + " = " + generateExpression(node->value.get()) + ";\n";
         } else if (auto node = dynamic_cast<const PrintStatementNode*>(stmt)) {
-            code += "    cout << " + generateExpression(node->expression.get()) + " << endl;\n";
+            code += indentation + "cout << " + generateExpression(node->expression.get()) + " << endl;\n";
         } else if (auto node = dynamic_cast<const IfStatementNode*>(stmt)) {
-            code += "    if " + generateExpression(node->condition.get()) + " {\n";
-            for(const auto& s : node->ifBlock->statements) {
-                code += "    " + generateStatement(s.get());
+            // Handle the "if" part
+            if (indent > 0) { // Don't indent for chained "else if"
+                 code += indentation;
             }
-            code += "    }\n";
-            if (node->elseBlock) {
-                 code += "    else {\n";
-                 for(const auto& s : node->elseBlock->statements) {
-                    code += "    " + generateStatement(s.get());
-                 }
-                 code += "    }\n";
+            code += "if " + generateExpression(node->condition.get()) + " {\n";
+            for(const auto& s : node->ifBlock->statements) {
+                code += generateStatement(s.get(), indent + 1);
+            }
+            code += indentation + "}";
+
+            // Handle the "else" or "else if" part
+            if (node->elseNode) {
+                code += " else ";
+                // Check if the else part is another if-statement (for "else if")
+                if (dynamic_cast<const IfStatementNode*>(node->elseNode.get())) {
+                    code += generateStatement(node->elseNode.get(), 0); // indent 0 prevents extra spacing
+                } 
+                // Otherwise, it's a standard "else" block
+                else {
+                    code += "{\n";
+                    auto elseBlock = dynamic_cast<const BlockNode*>(node->elseNode.get());
+                    for(const auto& s : elseBlock->statements) {
+                       code += generateStatement(s.get(), indent + 1);
+                    }
+                    code += indentation + "}\n";
+                }
+            } else {
+                code += "\n";
             }
         }
         return code;
