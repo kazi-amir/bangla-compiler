@@ -7,7 +7,7 @@ map<string, string> token{
     {"purno", "int "}, {"vogno", "double "}, {"bakko", "string "}, {"borno", "char "}, 
     {"jodi", "if "}, {"nahole", "else "}, {"loop", "for "},
     {"shesh", "return 0; \n} "}, {";", "; \n"}, {"{", "{ \n"}, {"}", "} \n"}, 
-    {"dekhao", "cout << "}
+    {"dekhao", "printf"}
 };
 
 // --- Tokenizer Function ---
@@ -111,7 +111,7 @@ int main() {
             if(tokens[i]=="}"){
                 tabs--;
             }
-            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == ";" || tokens[i] == "}" || tokens[i-1] == "}")){
+            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == ";"  || tokens[i] == "}" || tokens[i-1] == "}")){
                 for(int j = 0; j < tabs; j++){
                     outputFile << "\t";
                 }

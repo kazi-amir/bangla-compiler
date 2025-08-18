@@ -6,23 +6,22 @@ shuru
 
     jodi (x > 50) {
         jodi (x < 80){
-            dekhao "Beshi boro na\n";
+            dekhao("Beshi boro na\n");
         }
         nahole{
-            dekhao "Valoi boro\n";
+            dekhao("Valoi boro\n");
         }
     }
     nahole jodi (x == 49){
-        dekhao "x holo 49\n";
+        dekhao("x holo 49\n");
     }
     nahole {
-        dekhao "Number is not greater than 50\n";
+        dekhao("Number is not greater than 50\n");
     }
 
     loop(purno i = 0; i < 10; i++){
-        dekhao "loop: ";
-        dekhao i + 1;
-        dekhao "\n";
+        dekhao("loop: %d\n", i+1);
     }
+
 
 shesh

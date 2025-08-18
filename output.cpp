@@ -7,24 +7,22 @@ int main(){
 	x-=6; 
 	if (x>50){ 
 		if (x<80){ 
-			cout << "Beshi boro na\n"; 
+			printf("Beshi boro na\n"); 
 		} 
 		else { 
-			cout << "Valoi boro\n"; 
+			printf("Valoi boro\n"); 
 		} 
 	} 
 	else if (x==49){ 
-		cout << "x holo 49\n"; 
+		printf("x holo 49\n"); 
 	} 
 	else { 
-		cout << "Number is not greater than 50\n"; 
+		printf("Number is not greater than 50\n"); 
 	} 
 	for (int i=0; 
 	i<10; 
 	i++){ 
-		cout << "loop: "; 
-		cout << i+1; 
-		cout << "\n"; 
+		printf("loop: %d\n",i+1); 
 	} 
 	return 0; 
 } 
