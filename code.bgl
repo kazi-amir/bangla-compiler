@@ -1,4 +1,5 @@
 shuru
+    //1 line er comment
     purno x = 85#
     bakko message = "Hello World"#
 

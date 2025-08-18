@@ -2,6 +2,7 @@
 using namespace std;
 
 int main(){ 
+	//1 line er comment
 	int x=85; 
 	string message="Hello World"; 
 	x-=6; 

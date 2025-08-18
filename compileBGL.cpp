@@ -20,7 +20,7 @@ void compileCode(const vector<string> &tokens){
             if(tokens[i]=="}"){
                 tabs--;
             }
-            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == "#"  || tokens[i] == "}" || tokens[i-1] == "}")){
+            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == "#"  || tokens[i] == "}" || tokens[i-1] == "}" || tokens[i-1][0] == '/')){
                 for(int j = 0; j < tabs; j++){
                     outputFile << "\t";
                 }

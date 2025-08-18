@@ -35,6 +35,19 @@ vector<string> Lexer(const string& sourceCode) {
             continue; // continue to next token
         }
 
+        //Single line comment handle
+        string comment;
+        if(currentChar == '/' && pos + 1 < sourceCode.length() && sourceCode[pos + 1] == '/') {
+            // Skip to the end of the line
+            while (pos < sourceCode.length() && sourceCode[pos] != '\n') {
+                comment += sourceCode[pos];
+                pos++;
+            }
+            comment+="\n";
+            tokens.push_back(comment); //store the comment token
+            continue; // continue to next token
+        }
+
         //Tokenize words (keywords and identifiers)
         if (isalpha(currentChar) || currentChar == '_') {
             string word;
