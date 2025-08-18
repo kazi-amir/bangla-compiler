@@ -1,14 +1,11 @@
 #include <bits/stdc++.h>
-// #include "tokenFinder.h"
 using namespace std;
-#include <cctype> // For isalpha(), isdigit(), isspace()
-
-using namespace std;
+#include <cctype>
 
 map<string, string> token{
     {"shuru", "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){ \n"},
     {"purno", "int "}, {"vogno", "double "}, {"bakko", "string "}, {"borno", "char "}, 
-    {"jodi", "if "}, {"nahole_jodi", "else if "}, {"nahole", "else "}, {"loop", "for "},
+    {"jodi", "if "}, {"nahole", "else "}, {"loop", "for "},
     {"shesh", "return 0; \n} "}, {";", "; \n"}, {"{", "{ \n"}, {"}", "} \n"}, 
     {"dekhao", "cout << "}
 };
@@ -91,8 +88,8 @@ vector<string> tokenize(const string& sourceCode) {
 
 // --- Main Function ---
 int main() {
-    string filename = "code.bgl";
-    ifstream inputFile(filename);
+    string filename = "code.bgl"; //The file to be opened
+    ifstream inputFile(filename); //read file with name filename
 
     if (!inputFile.is_open()) {
         cerr << "Error: Could not open file '" << filename << "'" << endl;
@@ -103,16 +100,6 @@ int main() {
     inputFile.close();
 
     vector<string> tokens = tokenize(sourceCode);
-
-    // cout << "--- Tokens Found in " << filename << " ---" << endl;
-    // for (const auto& tx : tokens) {
-    //     cout << tx << " ";
-    //     // if (tx == ";" || tx == "{" || tx == "}") {
-    //         cout << endl;
-    //     // }
-    // }
-    // cout << "\n----------------------------------" << endl;
-    // cout << "Total tokens stored: " << tokens.size() << endl;
 
     ofstream outputFile("output.cpp");
     if (outputFile.is_open()) {
