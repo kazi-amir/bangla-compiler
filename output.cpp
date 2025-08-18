@@ -19,9 +19,7 @@ int main(){
 	else { 
 		printf("Number is not greater than 50\n"); 
 	} 
-	for (int i=0; 
-	i<10; 
-	i++){ 
+	for (int i=0; i<10; i++){ 
 		printf("loop: %d\n",i+1); 
 	} 
 	return 0; 

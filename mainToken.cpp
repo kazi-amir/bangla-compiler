@@ -6,8 +6,8 @@ map<string, string> token{
     {"shuru", "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){ \n"},
     {"purno", "int "}, {"vogno", "double "}, {"bakko", "string "}, {"borno", "char "}, 
     {"jodi", "if "}, {"nahole", "else "}, {"loop", "for "},
-    {"shesh", "return 0; \n} "}, {";", "; \n"}, {"{", "{ \n"}, {"}", "} \n"}, 
-    {"dekhao", "printf"}
+    {"shesh", "return 0; \n} "}, {"#", "; \n"}, {"{", "{ \n"}, {"}", "} \n"}, 
+    {"dekhao", "printf"}, {";", "; "}
 };
 
 // --- Tokenizer Function ---
@@ -24,7 +24,7 @@ vector<string> tokenize(const string& sourceCode) {
             continue;
         }
 
-        // NEW: 2. Handle string literals
+        //2. Handle string literals
         // If a double quote is found, everything until the next double quote is one token.
         if (currentChar == '"') {
             string strLiteral;
@@ -47,12 +47,12 @@ vector<string> tokenize(const string& sourceCode) {
         // 3. Tokenize words (keywords, identifiers)
         if (isalpha(currentChar) || currentChar == '_') {
             string word;
-            while (pos < sourceCode.length() && (isalnum(sourceCode[pos]) || sourceCode[pos] == '_')) {
+            while (pos < sourceCode.length() && (isalnum(sourceCode[pos]) || sourceCode[pos] == '_')) { //isalnum is to check id the caracter is alphabet or numeric(alphanumeric)
                 word += sourceCode[pos];
                 pos++;
             }
             tokens.push_back(word);
-            continue;
+            continue; // continue to next token
         }
 
         // 4. Tokenize numbers
@@ -63,10 +63,10 @@ vector<string> tokenize(const string& sourceCode) {
                 pos++;
             }
             tokens.push_back(number);
-            continue;
+            continue; //continue to next token
         }
 
-        // 5. Tokenize operators and punctuation (with look-ahead)
+        // 5. Tokenize operators and punctuation
         if (pos + 1 < sourceCode.length()) {
             string twoCharOp = sourceCode.substr(pos, 2);
             if (twoCharOp == "==" || twoCharOp == "!=" || twoCharOp == ">=" || twoCharOp == "<=" ||
@@ -111,7 +111,7 @@ int main() {
             if(tokens[i]=="}"){
                 tabs--;
             }
-            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == ";"  || tokens[i] == "}" || tokens[i-1] == "}")){
+            if(i>0 && (tokens[i-1] == "shuru" || tokens[i-1] == "{" || tokens[i-1] == "#"  || tokens[i] == "}" || tokens[i-1] == "}")){
                 for(int j = 0; j < tabs; j++){
                     outputFile << "\t";
                 }
@@ -134,3 +134,4 @@ int main() {
 
     return 0;
 }
+
