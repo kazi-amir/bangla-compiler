@@ -38,12 +38,12 @@ vector<string> Lexer(const string& sourceCode) {
         //Single line comment handle
         string comment;
         if(currentChar == '/' && pos + 1 < sourceCode.length() && sourceCode[pos + 1] == '/') {
-            // Skip to the end of the line
+            //Store the comment line
             while (pos < sourceCode.length() && sourceCode[pos] != '\n') {
                 comment += sourceCode[pos];
                 pos++;
             }
-            comment+="\n";
+            comment+="\n"; // add a newline at the end of the comment
             tokens.push_back(comment); //store the comment token
             continue; // continue to next token
         }
