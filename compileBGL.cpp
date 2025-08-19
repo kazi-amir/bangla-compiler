@@ -6,7 +6,7 @@ map<string, string> token{
     {"purno", "int "}, {"vogno", "double "}, {"bakko", "string "}, {"borno", "char "}, 
     {"jodi", "if "}, {"nahole", "else "}, {"loop", "for "},
     {"shesh", "return 0; \n} "}, {"#", "; \n"}, {"{", "{ \n"}, {"}", "} \n"}, 
-    {"dekhao", "printf"}, {";", "; "}
+    {"dekhao", "printf"}, {";", "; "}, {"nao", "scanf"}
 };
 
 void compileCode(const vector<string> &tokens){

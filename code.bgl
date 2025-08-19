@@ -1,27 +1,12 @@
 shuru
     //1 line er comment
-    purno x = 85#
+    purno x= 85#
     bakko message = "Hello World"#
 
-    x -= 6#
-
-    jodi (x > 50) {
-        jodi (x< 80){
-            dekhao("Beshi boro na\n")#
-        }
-        nahole{
-            dekhao("Valoi boro\n")#
-        }
-    }
-    nahole jodi (x == 49){
-        dekhao("x holo 49\n")#
-    }
-    nahole {
-        dekhao("Number is not greater than 50\n")#
-    }
-
-    loop(purno i = 0; i < 10; i++){
-        dekhao ("loop: %d\n", i + 1)#
-    }
+    nao("%d", &x)#
+    purno y#
+    nao("%d", &y)#
+    purno jogfol = x + y#
+    dekhao("Jogfol: %d\n", jogfol)#
 
 shesh

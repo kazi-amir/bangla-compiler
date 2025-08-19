@@ -17,6 +17,7 @@ int main() {
     inputFile.close();
 
     vector<string> tokens = Lexer(sourceCode);
+    
     compileCode(tokens);
 
     return 0;
